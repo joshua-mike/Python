@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -57,10 +58,14 @@ def one_hot_encoding(df):
      return pd.get_dummies(df, columns=['categorical_column_name'])
 
 def save_cleaned_data(df, file_name):
-    df.to_csv(file_name, index=False)
-    print(f"Cleaned data saved to {file_name}")
+    save_file_path = input("Enter the file path to save the cleaned data (e.g., cleaned_data.csv): ")
+    if not os.path.exists(save_file_path):
+        os.makedirs(os.path.dirname(save_file_path), exist_ok=True)
+    df.to_csv(save_file_path, index=False)
+    print(f"Cleaned data saved to {save_file_path}")
 
-df = load_data('raw_data.csv')
+path_to_data = input("Enter the file path to the raw data (e.g., raw_data.csv): ")
+df = load_data(path_to_data)
 df = drop_missing_values(df)
 # Optionally visualize missing values before filling them
 # df = visualize_missing_values(df)
