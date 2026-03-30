@@ -25,9 +25,13 @@ def visualize_missing_values(df):
 def drop_missing_values(df):
      return df.dropna()
 
-# Fill missing values with mean
+# Fill missing values with mean where numeric and with "Unknown" where categorical
 def fill_missing_values(df):
-     return df.fillna(df.mean())
+     numeric_cols = df.select_dtypes(include='number')
+     df[numeric_cols.columns] = numeric_cols.fillna(numeric_cols.mean())
+     string_cols = df.select_dtypes(include='object')
+     df[string_cols.columns] = string_cols.fillna("Unknown")
+     return df
 
 # Identify and remove outliers using Z-score
 def remove_outliers_zscore(df):
@@ -57,7 +61,7 @@ def z_score_standardization(df):
 def one_hot_encoding(df):
      return pd.get_dummies(df, columns=['categorical_column_name'])
 
-def save_cleaned_data(df, file_name):
+def save_cleaned_data(df):
     save_file_path = input("Enter the file path to save the cleaned data (e.g., cleaned_data.csv): ")
     if not os.path.exists(save_file_path):
         os.makedirs(os.path.dirname(save_file_path), exist_ok=True)
@@ -73,6 +77,6 @@ df = fill_missing_values(df)
 df = remove_outliers_zscore(df)
 df = cap_outliers(df)
 df = min_max_scaling(df)
-df =z_score_standardization(df)
+df = z_score_standardization(df)
 df = one_hot_encoding(df)
-save_cleaned_data(df, 'cleaned_data.csv')
+save_cleaned_data(df)
