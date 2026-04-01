@@ -68,8 +68,11 @@ def remove_outliers_zscore(df):
 # Cap outliers using quantiles
 def cap_outliers(df):
     try:
-        upper_limit = df['column_name'].quantile(0.95)
-        df['column_name'] = np.where(df['column_name'] > upper_limit, upper_limit, df['column_name'])
+        numeric_cols = df.select_dtypes(include='number').columns
+        for col in numeric_cols:
+            upper_limit = df[col].quantile(0.95)
+            lower_limit = df[col].quantile(0.05)
+            df[col] = np.clip(df[col], lower_limit, upper_limit)
         print("Outliers capped successfully using quantiles.")
     except Exception as e:
         print(f"Error capping outliers: {e}")
@@ -89,8 +92,9 @@ def min_max_scaling(df):
 # Z-score Standardization
 def z_score_standardization(df):
     try:
+        numeric_cols = df.select_dtypes(include='number')
         scaler = StandardScaler()
-        df = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+        df[numeric_cols.columns] = scaler.fit_transform(numeric_cols)
         print("Data standardized successfully using Z-score.")
     except Exception as e:
         print(f"Error standardizing data: {e}")
@@ -99,7 +103,8 @@ def z_score_standardization(df):
 # One-hot encoding for categorical variables
 def one_hot_encoding(df):
      try:
-        df = pd.get_dummies(df, columns=['categorical_column_name'])
+        categorical_cols = df.select_dtypes(include='str').columns.tolist()
+        df = pd.get_dummies(df, columns=categorical_cols)
         print("One-hot encoding completed successfully.")
      except Exception as e:
         print(f"Error performing one-hot encoding: {e}")
@@ -119,7 +124,7 @@ def save_cleaned_data(df):
 # df = load_data(path_to_data)
 df = get_dummy_data()
 if df is None:
-    print("Exiting due to data loading error.")
+    print("Error loading data. Exiting the program.")
     sys.exit(1)
 df = drop_missing_values(df)
 # Optionally visualize missing values before filling them
