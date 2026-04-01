@@ -22,6 +22,11 @@ def get_dummy_data():
     try:
         dummy_data = DataDummy().create_dummy_data()
         print(f"Dummy data retrieved successfully. {dummy_data.head()}")
+        # save_file_path = input("Enter the file path to save the cleaned data (e.g., cleaned_data.csv): ")
+        # if not os.path.exists(save_file_path):
+        #    os.makedirs(os.path.dirname(save_file_path), exist_ok=True)
+        #dummy_data.to_csv(save_file_path, index=False)
+        #print(f"Raw data saved to {save_file_path}")
         return dummy_data
     except Exception as e:
         print(f"Error generating dummy data: {e}")
@@ -130,9 +135,9 @@ df = drop_missing_values(df)
 # Optionally visualize missing values before filling them
 # df = visualize_missing_values(df)
 df = fill_missing_values(df)
-df = remove_outliers_zscore(df)
+# df = remove_outliers_zscore(df)
 df = cap_outliers(df)
 df = min_max_scaling(df)
-df = z_score_standardization(df)
+# df = z_score_standardization(df)
 df = one_hot_encoding(df)
 save_cleaned_data(df)
