@@ -1,9 +1,12 @@
 import os
+import sys
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import missingno as msno
 from scipy import stats
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Helpers'))
+from data_dummy import DataDummy
 
 # Load dataset
 def load_data(file_path):
@@ -14,7 +17,15 @@ def load_data(file_path):
     except Exception as e:
         print(f"Error loading data: {e}")
         return None
-    
+
+def get_dummy_data():
+    try:
+        dummy_data = DataDummy().create_dummy_data()
+        print(f"Dummy data retrieved successfully. {dummy_data.head()}")
+        return dummy_data
+    except Exception as e:
+        print(f"Error generating dummy data: {e}")
+        return None
 
 # Visualize missing values
 def visualize_missing_values(df):
@@ -45,10 +56,11 @@ def fill_missing_values(df):
 # Identify and remove outliers using Z-score
 def remove_outliers_zscore(df):
     try:
-        numeric_cols = df.select_dtypes(include='number')
-        z_scores = np.abs(stats.zscore(numeric_cols))
-        df = df[(z_scores < 3).all(axis=1)]
-        print("Outliers removed successfully using Z-score.")
+        numeric_cols = df.select_dtypes(include='number').to_numpy()
+        z_scores = np.abs(stats.zscore(numeric_cols, nan_policy='omit'))
+        mask = (z_scores < 3).all(axis=1)
+        df = df[mask]
+        print(f"Outliers removed successfully using Z-score. Remaining rows: {len(df)}")
     except Exception as e:
         print(f"Error removing outliers: {e}")
     return df
@@ -103,8 +115,12 @@ def save_cleaned_data(df):
     except Exception as e:
         print(f"Error saving cleaned data: {e}")
 
-path_to_data = input("Enter the file path to the raw data (e.g., raw_data.csv): ")
-df = load_data(path_to_data)
+# path_to_data = input("Enter the file path to the raw data (e.g., raw_data.csv): ")
+# df = load_data(path_to_data)
+df = get_dummy_data()
+if df is None:
+    print("Exiting due to data loading error.")
+    sys.exit(1)
 df = drop_missing_values(df)
 # Optionally visualize missing values before filling them
 # df = visualize_missing_values(df)
