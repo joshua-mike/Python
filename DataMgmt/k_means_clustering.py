@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'Helpers'))
 from data_dummy import DataDummy
 
-df = DataDummy().create_k_means_data()
+df = DataDummy().create_unsupervised_data()
 # Inspect the first few rows of the dataset
 print("---------------Initial dataset-------------------")
 print(df.head())

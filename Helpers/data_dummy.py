@@ -4,7 +4,7 @@ import numpy as np
 class DataDummy:
     def __init__(self):
         self.data = None
-        self.k_means_data = None
+        self.unsupervised_data = None
 
     def create_dummy_data(self):
         # Create a dummy dataset with 100 rows and 4 columns, including some missing values and outliers
@@ -18,9 +18,9 @@ class DataDummy:
         print("Dummy data created successfully.")
         return self.data
 
-    def create_k_means_data(self):
+    def create_unsupervised_data(self):
         # Create a sample dataset with customer annual income and spending score
-        self.k_means_data = {'AnnualIncome': [
+        self.unsupervised_data = {'AnnualIncome': [
             15, 15.5, 16, 16.5, 17, 17.5, 18, 18.5, 19, 19.5, 
             20, 20.5, 21, 21.5, 22, 22.5, 23, 23.5, 24, 24.5, 
             25, 25.5, 26, 26.5, 27, 27.5, 28, 28.5, 29, 29.5, 
@@ -36,4 +36,4 @@ class DataDummy:
             56,   # Normal points
             2, 3, 100  # Outliers
         ]}
-        return pd.DataFrame(self.k_means_data)
+        return pd.DataFrame(self.unsupervised_data)
